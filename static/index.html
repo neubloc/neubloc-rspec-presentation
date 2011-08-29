@@ -1,0 +1,848 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>RSpec</title>
+
+  <link rel="stylesheet" href="./css/reset.css" type="text/css"/>
+  <link rel="stylesheet" href="./css/showoff.css" type="text/css"/>
+
+  <script type="text/javascript" src="./js/jquery-1.4.2.min.js"></script>
+  <script type="text/javascript" src="./js/jquery.cycle.all.js"></script>
+	<script type="text/javascript" src="./js/jquery-print.js"></script>
+  <script type="text/javascript" src="./js/jquery.batchImageLoad.js"></script>
+
+  <script type="text/javascript" src="./js/jquery.doubletap-0.1.js"></script>
+
+  <script type="text/javascript" src="./js/fg.menu.js"></script>
+  <script type="text/javascript" src="./js/showoff.js"></script>
+  <script type="text/javascript" src="./js/jTypeWriter.js"> </script>
+  <script type="text/javascript" src="./js/sh_main.min.js"></script>
+  <script type="text/javascript" src="./js/core.js"></script>
+  <script type="text/javascript" src="./js/showoffcore.js"></script>
+
+  <link type="text/css" href="./css/fg.menu.css" media="screen" rel="stylesheet" />
+  <link type="text/css" href="./css/theme/ui.all.css" media="screen" rel="stylesheet" />
+  <link type="text/css" href="./css/sh_style.css" rel="stylesheet" >
+
+  
+    <link rel="stylesheet" href="file/style.css" type="text/css"/>
+  
+
+  
+    <script type="text/javascript" src="file/jquery.mousewheel.js"></script>
+  
+    <script type="text/javascript" src="file/navigation.js"></script>
+  
+
+  <script type="text/javascript">
+  $(function(){
+    setupPreso(false, './');
+  });
+  </script>
+</head>
+
+<body>
+
+
+<a tabindex="0" href="#search-engines" class="fg-button fg-button-icon-right ui-widget ui-state-default ui-corner-all" id="navmenu"><span class="ui-icon ui-icon-triangle-1-s"></span>slides</a>
+<div id="navigation" class="hidden"></div>
+
+<div id="help">
+  <table>
+    <tr><td class="key">space, &rarr;</td><td>next slide</td></tr>
+    <tr><td class="key">&larr;</td><td>previous slide</td></tr>
+    <tr><td class="key">d</td><td>debug mode</td></tr>
+    <tr><td class="key">## &lt;ret&gt;</td><td>go to slide #</td></tr>
+    <tr><td class="key">c</td><td>table of contents (vi)</td></tr>
+    <tr><td class="key">f</td><td>toggle footer</td></tr>
+    <tr><td class="key">r</td><td>reload slides</td></tr>
+    <tr><td class="key">z</td><td>toggle help (this)</td></tr>
+  </table>
+</div>
+
+<div class="buttonNav">
+  <input type="submit" onClick="prevStep();" value="prev"/>
+  <input type="submit" onClick="nextStep();" value="next"/>
+</div>
+
+<div id="preso">loading presentation...</div>
+<div id="footer">
+  <span id="slideInfo"></span>
+  <span id="debugInfo"></span>
+  <span id="notesInfo"></span>
+</div>
+
+<div id="slides" class="offscreen" style="display:none;">
+<div class="slide" data-transition="fade"><div class="content" ref="intro/01_welcome">
+<h1>Stubs &amp; Mocks using RSpec</h1>
+
+<h3>by Kamil Ba&#x107;kowski</h3></div>
+</div><div class="slide" data-transition="none"><div class="content bullets full-page" ref="intro/02_table_of_contents">
+<h1>What i will cover</h1>
+
+<ul>
+<li><span class="bullet">&#xBB;</span> What is Rspec ?</li>
+<li><span class="bullet">&#xBB;</span> RSpec features</li>
+<li><span class="bullet">&#xBB;</span> RSpec in action</li>
+<li><span class="bullet">&#xBB;</span> Stubs &amp; Mocks</li>
+<li><span class="bullet">&#xBB;</span> Stubs &amp; Mocks using RSpec</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content bullets full-page" ref="about_rspec/01_what_is_rspec">
+<h1>What is RSpec ?</h1>
+
+<ul>
+<li><span class="bullet">&#xBB;</span> testing framework for Ruby on Rails</li>
+<li><span class="bullet">&#xBB;</span> replacement for RoR built-in testing tool</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="about_rspec/02_rspec_vs_unit_test">
+<h2>TestUnit</h2>
+
+<pre class="sh_Ruby"><code>class Calculator &lt; Test::Unit::TestCase
+  def test_addition
+    assert_equal(8, Calculator.new(6, 2).addition)
+  end
+
+  def test_subtraction
+    assert_same(4, Calculator.new(6, 2).subtraction)
+  end
+end</code></pre>
+
+<h2>RSpec</h2>
+
+<pre class="sh_Ruby"><code>desribe Calculator do
+  let(:calculator) { Calculator.new(6,2) }
+
+  it "should return 8 when adding 6 and 2" do
+    calculator.addition.should eql(8)
+  end
+
+  it "should return 4 when subtracting 2 from 6" do
+    calculator.subtraction.should eql(4)
+  end
+end</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="about_rspec/03_basics">
+<h2>RSpec basics</h2>
+
+<pre class="sh_Ruby"><code>describe MyClass do                     # creates initial scope
+  before do
+    @object = MyClass.new  
+  end
+
+  describe "#some_method" do            # creates new scope
+    it "should ..." do
+      @object.should ...
+    end
+
+    context "when authorized" do        # creates new scope
+      before do
+        @object.authorized = true
+      end
+
+      it "should ..." do
+        @object.should ...
+      end
+    end
+
+    context "when not authorized" do    # creates new scope
+      it "should ..." do
+        @object.should ...
+      end
+    end
+  end
+
+  it "should ..." do
+    pending "Fix some model first"      # creates pending test
+  end
+end</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="why_rspec/00_intro">
+<h2>Why RSpec?</h2></div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="why_rspec/01_redability">
+<h2>Readability</h2>
+
+<pre class="sh_Ruby"><code>describe Campaign do
+
+  it "should be visible by default" do
+    campaign.should be_visible
+  end
+
+  it "should have performances visible by default" do
+    campaign.performances_visible.should be_true
+  end
+
+  it "should not be published at start" do
+    campaign.should_not be_published
+  end
+
+  it "should not be ready to publish at start - without performances, etc" do
+    campaign.should_not be_ready_to_publish
+  end
+
+  describe "#allowed_performance_kinds" do
+    it "should allow all by default" do
+      campaign.allowed_performance_kinds.should == Performance.kinds
+    end
+  end
+end</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="why_rspec/02_documentation/1">
+<h2>Tests documentation and failure messages</h2>
+
+<pre class="console">
+$ rspec -f doc spec/models/campaigns_spec.rb
+
+Campaign
+  <span class="ok">should be visible by default</span>
+  <span class="ok">should have performances visible by default</span>
+  <span class="ok">should not be published at start</span>
+  <span class="fail">should not be ready to publish at start - without performances, etc</span>
+  #allowed_performance_kinds
+    <span class="ok">should allow all by default</span>
+    
+Failures:
+
+  1) Campaign should not be ready to publish at start - without performances, etc
+     <span class="fail">Failure/Error: campaign.should_not be_ready_to_publish</span>
+     <span class="fail">  expected ready_to_publish? to return false, got true</span>
+     # ./spec/models/campaign_spec.rb:23:in `block (2 levels) in <top/>(required)&gt;'
+
+Finished in 0.71323 seconds
+<span class="fail">5 examples, 1 failure</span>
+</pre>
+</div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="why_rspec/02_documentation/2">
+<h3>When tests output matter</h3>
+
+<p><img src="file:///home/kamil/workspace/rspec-presentation/why_rspec/integrity.png" alt="integrity"/></p></div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="why_rspec/03_profiler">
+<h2>Built-in profiler</h2>
+
+<pre class="console">
+$ rspec --profile spec/
+
+Top 10 slowest examples:
+  PerformanceSortable should use creation date if there is no position (older first)
+    <span class="fail">1.5 seconds</span> ./spec/lib/performance_sortable_spec.rb:20
+  PerformanceSortable should use position to sort performances regardless of their type
+    <span class="fail">1.14 seconds</span> ./spec/lib/performance_sortable_spec.rb:8
+  PerformanceSortable should put performances without position at end on sort
+    <span class="fail">0.91228 seconds</span> ./spec/lib/performance_sortable_spec.rb:14
+  Globe#Items management only one globe can be active
+    <span class="fail">0.51207 seconds</span> ./spec/models/globe_spec.rb:60
+  Admin::UsersController#index should support xls format
+    <span class="fail">0.42799 seconds</span> ./spec/controllers/admin/users_controller_spec.rb:14
+  Globe#Items management should be able to edit existing globeitem collection
+    <span class="fail">0.35712 seconds</span> ./spec/models/globe_spec.rb:74
+  Globe#Items management should be able to set to active if there is 20 globeitems or more in globe collection
+    <span class="fail">0.29752 seconds</span> ./spec/models/globe_spec.rb:53
+  Json::GlobesController#show should render template without errors
+    <span class="fail">0.2893 seconds</span> ./spec/controllers/json/globes_controller_spec.rb:29
+  Vote average ratings should update user average for resource
+    <span class="fail">0.28084 seconds</span> ./spec/models/vote_spec.rb:23
+  Comment#destroy should delete child comments
+    <span class="fail">0.27684 seconds</span> ./spec/models/comment_spec.rb:23
+
+Finished in 58.98 seconds
+<span class="ok">955 examples, 0 failures, 6 pending</span>
+</pre>
+</div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="why_rspec/04_run_filter">
+<h2>Test run filters</h2>
+
+<pre class="sh_Ruby"><code>def old_ruby
+  RUBY_VERSION != "1.9.2"
+end
+
+describe TrueClass do
+  it "should be true for true", :if =&gt; old_ruby do
+    true.should be_true
+  end
+
+  it "should be true for String", :current =&gt; true do
+    "".should be_true
+  end
+
+  it "should be true for Fixnum" do
+    0.should be_true
+  end
+end</code></pre>
+
+<pre class="console">
+$ rspec -f doc spec/lib/true_spec.rb:10 
+$ rspec -f doc -l 10 spec/lib/true_spec.rb
+$ rspec -f doc -t current spec/lib/true_spec.rb
+
+Run filtered including {:line_number=&gt;11}
+Run filtered including {:current=&gt;true}
+
+TrueClass
+  <span class="ok">should be true for String</span>
+
+Finished in 0.00138 seconds
+<span class="ok">1 example, 0 failures</span>
+</pre>
+</div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="why_rspec/05_conventions">
+<h2>Conventions</h2>
+
+<pre class="console">
+$ ls peoplejar/spec/ 
+
+controllers/
+helpers/
+lib/
+mailers/
+models/
+routing/
+support/
+views/
+</pre>
+</div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="why_rspec/06_built_in_matchers">
+<h2>Built-in matchers</h2>
+
+<pre class="sh_Ruby"><code>target.should satisfy {|arg| ...}                   lambda {a_call}.should raise_error
+target.should_not satisfy {|arg| ...}               lambda {a_call}.should raise_error(&lt;exception&gt; [, message])
+target.should equal &lt;value&gt;                         lambda {a_call}.should_not raise_error
+target.should not_equal &lt;value&gt;                     lambda {a_call}.should_not raise_error(&lt;exception&gt; [, message])
+target.should be_close &lt;value&gt;, &lt;tolerance&gt;         proc.should throw &lt;symbol&gt;
+target.should_not be_close &lt;value&gt;, &lt;tolerance&gt;     proc.should_not throw &lt;symbol&gt;
+target.should be &lt;value&gt;                            target.should include &lt;object&gt;
+target.should_not be &lt;value&gt;                        target.should_not include &lt;object&gt;
+target.should predicate [optional args]             target.should have(&lt;number&gt;).things
+target.should be_predicate [optional args]          target.should have_at_least(&lt;number&gt;).things
+target.should_not predicate [optional args]         target.should have_at_most(&lt;number&gt;).things
+target.should_not be_predicate [optional args]      target.should have(&lt;number&gt;).errors_on(:field)
+target.should be &lt; 6                                expect { thing.approve! }.to change(thing, :status).
+target.should be_between(1, 10)                                               from(Status::AWAITING_APPROVAL).
+target.should match &lt;regex&gt;                                                   to(Status::APPROVED)
+target.should_not match &lt;regex&gt;                     expect { thing.destroy }.to change(Thing, :count).by(-1)
+target.should be_an_instance_of &lt;class&gt;
+target.should_not be_an_instance_of &lt;class&gt;
+target.should be_a_kind_of &lt;class&gt;
+target.should_not be_a_kind_of &lt;class&gt;
+target.should respond_to &lt;symbol&gt;
+target.should_not respond_to &lt;symbol&gt;</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content bullets full-page" ref="why_rspec/07_problems">
+<h2>Problems ?</h2>
+
+<ul>
+<li><span class="bullet">&#xBB;</span> Hard to learn at the begining</li>
+<li><span class="bullet">&#xBB;</span> Routing tests could have more detailed failure messages</li>
+<li><span class="bullet">&#xBB;</span> Rails upgrade can break tests compatibility</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="rspec_in_action/00_intro">
+<h2>RSpec in action</h2></div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="rspec_in_action/02_model_specs">
+<h2>Model specs</h2>
+
+<h3>Placed under spec/models directory</h3>
+
+<pre class="sh_Ruby"><code>describe Campaign do
+
+  it "should be visible by default" do
+    campaign.should be_visible                        # will call campaign.visible?
+  end
+
+  it "should have performances visible by default" do
+    campaign.performances_visible.should be_true      # built-in matcher
+  end
+
+  it "should not be published at start" do
+    campaign.should_not be_published                  # will call campaign.published?
+  end
+
+  it "should not be ready to publish at start - without performances, etc" do
+    campaign.should_not be_ready_to_publish           # will call campaign.ready_to_publish?
+  end
+
+  describe "#allowed_performance_kinds" do
+    it "should allow all by default" do
+      campaign.allowed_performance_kinds.should == Performance.kinds
+    end
+  end
+end</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="rspec_in_action/03_controller_specs">
+<h2>Controller specs</h2>
+
+<h3>Placed under spec/controllers directory</h3>
+
+<pre class="sh_Ruby"><code>describe SessionsController do
+  render_views                          # controller tests stubs views by default unless we don't call this
+
+  describe "CREATE" do
+    context "for virtual user" do
+      before do
+        stub_find_user(virtual_user)
+      end
+
+      it "should not log into peoplejar" do
+        post :create, :user =&gt; {:email =&gt; virtual_user.email, :password =&gt; virtual_user.password }
+        response.should_not redirect_to(myjar_dashboard_path)
+      end
+
+      it "should not log into peoplejar without password" do
+        post :create, :user =&gt; {:email =&gt; virtual_user.email, :password =&gt; ""}
+        response.should_not redirect_to(myjar_dashboard_path)
+      end
+    end
+
+    context "for regular user" do
+      before do
+        stub_find_user(active_user)
+      end
+
+      it "should redirect to myjar when login data is correct" do
+        post :create, :user =&gt; {:email =&gt; active_user.email, :password =&gt; active_user.password }
+        response.should redirect_to(myjar_dashboard_path)
+      end
+
+    end</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="rspec_in_action/04_helper_specs">
+<h2>Helper specs</h2>
+
+<h3>Placed under spec/helpers directory</h3>
+
+<pre class="sh_Ruby"><code>describe CampaignsHelper do
+  let(:campaign) { Factory.stub(:campaign) }
+  let(:file_name) { "meldung.jpg" }
+
+  it "should return the same attachment URL as paperclip if there is no attachment" do
+    campaign.stub(:featured_image_file_name).and_return(nil)
+    helper.campaign_attachment_url(campaign, :featured_image).should eql(campaign.featured_image.url)
+  end
+
+  it "should return the same attachment URL as paperclip if there is attachment" do
+    campaign.stub(:featured_image_file_name).and_return(file_name)
+    helper.campaign_attachment_url(campaign, :featured_image).should eql(campaign.featured_image.url)
+  end
+
+end</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="rspec_in_action/05_view_specs">
+<h2>View specs</h2>
+
+<h3>Placed under spec/views directory</h3>
+
+<pre class="sh_Ruby"><code># view at views/campaigns/index.html.erb
+
+&lt;%= content_for :actions do %&gt;
+&lt;div id="hb_actions" class="browse_arena"&gt;
+  &lt;div id="middle_actions"&gt;
+    &lt;ul class="btn"&gt;
+    &lt;li class="btn_blue"&gt;&lt;%= create_performance_link %&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;% end %&gt;
+&lt;div id="interest_board_holder"&gt;&lt;%= campaings_wall_template(@campaigns) %&gt;&lt;/div&gt;
+
+# spec at spec/views/campaigns/index.html.erb_spec.rb
+
+describe "campaigns/index.html.erb" do
+  let(:campaign) { Factory.stub(:campaign) }
+
+  it "displays pagination when there are more than 20 published campaigns" do
+    assign(:campaigns, (1..21).map { campaign }.paginate(:per_page =&gt; 2) )
+
+    render
+    rendered.should include("Prev")
+    rendered.should include("Next")
+  end
+end</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="rspec_in_action/06_routing_specs">
+<h2>Routing specs</h2>
+
+<h3>Placed under spec/routing directory</h3>
+
+<pre class="sh_Ruby"><code>describe "home routing", :type =&gt; :controller do
+  it "should route / to Home#index" do
+    { :get =&gt; "/" }.should route_to(:controller =&gt; "home", :action =&gt; "index", :subdomain =&gt; false)
+  end
+
+  it "should route / with subdomain to Performances::Performances#index" do
+    { :get =&gt; "http://kzkgop.test.peoplejar.net" }.should route_to(:namespace =&gt; nil, :controller =&gt; "performances/performances", :action =&gt; "index")
+  end
+end
+
+describe "error routing", :type =&gt; :controller do
+  it "should route not existing route Errors#new" do
+    { :get =&gt; "/not_existing_route" }.should route_to(:controller =&gt; "errors", :action =&gt; "new", :path =&gt; "not_existing_route")
+  end
+end
+
+describe "icebreaks routing" do
+  it "should route /myjar/icebreaks/initiated to Icebreaks::InitiatedIcebreaks#index" do
+  { :get =&gt; "/myjar/icebreaks/initiated" }.should route_to(:controller =&gt; "icebreaks/initiated_icebreaks", :action =&gt; "index")
+  end
+end
+
+describe "admin routing" do
+  it "should route /admin to Admin::Base#index" do
+    { :get =&gt; "/admin" }.should route_to(:controller =&gt; "admin/welcome", :action =&gt; "index")
+  end
+end</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="stubs_and_mocks/00_intro">
+<h2>Stubs &amp; Mocks</h2></div>
+</div><div class="slide" data-transition="none"><div class="content bullets full-page" ref="stubs_and_mocks/01_why_should_i_care/1">
+<h2>Back to unit test assumptions</h2>
+
+<ul>
+<li><span class="bullet">&#xBB;</span> <em>"A unit is the smallest testable part of an application"</em></li>
+<li><span class="bullet">&#xBB;</span> <em>"The goal of unit testing is to isolate each part of the program and show that the individual parts are correct"</em></li>
+<li><span class="bullet">&#xBB;</span> <em>"Ideally, each test case is independent from the others"</em></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content bullets full-page" ref="stubs_and_mocks/01_why_should_i_care/2">
+<h2>you.should use_stubs!</h2>
+
+<ul>
+<li><span class="bullet">&#xBB;</span> Isolate your unit tests from external libraries and dependencies</li>
+<li><span class="bullet">&#xBB;</span> Propagate skinny methods which has low responsibility</li>
+<li><span class="bullet">&#xBB;</span> Single bug should make only related tests fail</li>
+<li><span class="bullet">&#xBB;</span> Speed up tests</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content bullets full-page" ref="stubs_and_mocks/01_why_should_i_care/3">
+<h2>PeopleJar is using :)</h2>
+
+<pre class="console">
+<span class="ok">
+...............................................................................................................
+...............................................................................................................
+...............................................................................................................
+...............................................................................................................
+...............................................................................*...............................
+...............................................................................................................
+...............................................................................................................
+..........................................................................*****................................
+..................................</span>
+
+Finished in 55.22 seconds
+<span class="ok">1037 examples, 0 failures, 6 pending</span>
+</pre>
+</div>
+</div><div class="slide" data-transition="none"><div class="content bullets full-page problems" ref="stubs_and_mocks/02_problems">
+<h2>Are there any problems ?</h2>
+
+<ul>
+<li><span class="bullet">&#xBB;</span> Writing test is more time consuming</li>
+<li><span class="bullet">&#xBB;</span> Need to know stubbed library internal implementations</li>
+<li><span class="bullet">&#xBB;</span> Need to write an integration test first</li>
+</ul>
+
+
+<script>
+$(".problems").bind("showoff:next", function (event) {
+  var li_1 = $(event.target).find("ul li:first");
+  if (li_1.css("text-decoration") === "none") {
+        event.preventDefault();
+        li_1.css({textDecoration: "line-through"})
+      }
+});
+</script>
+</div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="stubs_and_mocks/03_stubs_in_action">
+<h2>Stubs in action</h2>
+
+<pre class="sh_Ruby"><code>User.stub(:new)   # =&gt; nil
+User.stub(:new).and_return(true)
+
+user_object = User.new
+user_object.stub(:save).and_return(true)
+User.stub(:new).and_return(user_object)
+
+
+user_object.stub(:update_attributes).with(:username =&gt; "test").and_return(true)
+User.stub(:new).and_return(user_object)
+
+User.any_instance.stub(:save).and_return(true) # !
+
+# User.active.paginate
+User.stub_chain(:active, :paginate).and_return([user_object])
+
+user_object.stub(:set_permissions).with(an_instance_of(String), anything).and_return(true)
+user_object.unstub(:set_permissions)
+# user_object.set_permissions("admin", true) # =&gt; true (will use stubbed method)
+# user_object.set_permissions("admin") # =&gt; false (will call real method)</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content bullets full-page" ref="stubs_and_mocks/04_difference">
+<h2>What's the difference between Stubs and Mocks</h2>
+
+<ul>
+<li><p><span class="bullet">&#xBB;</span> Mocks are used to define expectations and verify them</p></li>
+<li><p><span class="bullet">&#xBB;</span> Stubs allows for defining eligible behavior</p></li>
+<li><p><span class="bullet">&#xBB;</span> Stubs will not cause a test to fail due to unfulfilled expectation</p></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="stubs_and_mocks/05_mocks_in_action">
+<h2>Mocks in action</h2>
+
+<pre class="sh_Ruby"><code>User.should_receive(:new)   # =&gt; nil
+User.should_receive(:new).and_return(true)
+User.should_not_receive(:new)
+
+user_object = User.new
+user_object.should_receive(:save).and_return(true)
+User.stub(:new).and_return(user_object)
+
+
+user_object.should_receive(:update_attributes).with(:username =&gt; "test").and_return(true)
+User.stub(:new).and_return(user_object)
+
+User.any_instance.should_receive(:save).and_return(true) # !
+
+user_object.should_receive(:update_attributes).once # default
+user_object.should_receive(:update_attributes).twice
+user_object.should_receive(:update_attributes).exactly(3).times
+
+user_object.should_receive(:set_permissions).with(an_instance_of(String), anything)
+# user_object.set_permissions("admin", true) # Success
+# user_object.set_permissions("admin") # Fail</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="stubs_and_mocks/06_difference_in_practice/1">
+<h2>In practice - Stub failure</h2>
+
+<pre class="sh_Ruby"><code>describe ".to_csv_file" do
+  it "should generate CSV output" do
+    User.stub(:active).and_return([user])
+    User.to_csv_file.should == "#{user.display_name},#{user.email}\n"
+  end
+end</code></pre>
+
+<pre class="console">
+User
+  .to_csv_file
+    <span class="fail">should generate CSV output  (FAILED - 1)</span>
+
+User.to_csv_file should generate CSV
+     <span class="fail">
+     Failure/Error: User.to_csv_file.should == "#{user.display_name},#{user.email}\n"
+       expected: "tester,person29.134279480426606@example.com\n"
+            got: "" (using ==)
+       Diff:
+       @@ -1,2 +1 @@
+       -tester,person29.134279480426606@example.com</span>
+     # ./spec/models/user_spec.rb:128:in `block (3 levels) in <top/>(required)&gt;'
+
+</pre>
+</div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="stubs_and_mocks/06_difference_in_practice/2">
+<h2>In practice - Mock failure</h2>
+
+<pre class="sh_Ruby"><code>describe "#facebook_uid=" do
+  it "should build facebook setting instance if not exists when setting uid" do
+    user.should_receive(:build_facebook_setting).with(:uid =&gt; "123")
+    user.facebook_uid = "123"
+  end
+end</code></pre>
+
+<pre class="console">
+User
+  #facebook_uid=
+    <span class="fail">should build facebook setting instance if not exists when setting uid (FAILED - 1)</span>
+    
+User#facebook_uid= should build facebook setting instance if not exists when setting uid
+    <span class="fail">
+      Failure/Error: user.should_receive(:build_facebook_setting).with(:uid =&gt; "123")
+      (tester).build_facebook_setting({:uid=&gt;"123"})
+          expected: 1 time
+          received: 0 times</span>
+    # ./spec/models/user_spec.rb:194:in `block (3 levels) in <top/>(required)&gt;'
+</pre>
+</div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="stubs_and_mocks/07_good_pratices/1">
+<h2>Break logic into small functions that can be stubbed</h2>
+
+<pre class="sh_Ruby"><code>class Facebook &lt; Devise::Strategies::Base
+
+  def authenticate!
+      begin
+        user = User.authenticate_with_facebook_connect(:uid =&gt; session[:facebook_uid])
+        if user.present?
+          success!(user)
+        else
+          facebook_data = get_facebook_data
+          if User.where(:email =&gt; facebook_data["email"]).exists?
+            update_old_account(facebook_data)
+          else
+            create_new_account(facebook_data)
+          end
+        end
+      rescue =&gt; e
+        fail!(e.message)
+      end
+    end
+
+    def create_new_account(facebook_data)
+      ...
+    end
+
+    def update_old_account(facebook_data)
+      ...
+    end
+
+    def get_facebook_data
+      ...
+    end    
+  end</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="stubs_and_mocks/07_good_pratices/2">
+<h2>Break logic into small functions that can be stubbed</h2>
+
+<pre class="sh_Ruby"><code>class Facebook &lt; Devise::Strategies::Base
+
+  def authenticate!
+    populate_data
+    begin
+      user = user_by_uid || user_by_email || build_user
+      user.save!
+      update_facebook_settings!(user)
+      success!(user)
+    rescue =&gt; e
+      fail!(e.message)
+    end
+  end
+
+  def user_by_uid
+    FacebookSetting.where(:uid =&gt; session[:facebook_uid]).first.try(:user) 
+  end
+
+  def user_by_email
+    User.where(:email =&gt; @facebook_data["email"]).first
+  end
+
+  def build_user
+    User.build_and_store_user_data(@facebook_data, session)
+  end
+
+  def update_facebook_settings!(user)
+    settings = user.find_or_build_facebook_setting
+    settings.update_attributes!(:token =&gt; session[:facebook_user_info]["access_token"], :uid =&gt; session[:facebook_uid])
+  end
+
+  def populate_data
+    @facebook_data = Koala::Facebook::GraphAPI.new(session[:facebook_user_info]["access_token"]).get_object("me")
+  end
+
+end</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="stubs_and_mocks/07_good_pratices/3">
+<h2>Break logic into small functions that can be stubbed</h2>
+
+<pre class="sh_Ruby"><code>describe Devise::Strategies::Facebook do
+  before do
+    strategy.stub(:session).and_return(stub_session)
+  end
+
+  describe "#update_facebook_settings!" do
+    it "should update user Facebook token and uid" do
+      user.facebook_setting.should_receive(:update_attributes!).with({ :token =&gt; stub_session[:facebook_user_info]["access_token"], 
+                                                                       :uid =&gt; stub_session[:facebook_uid] })
+      strategy.stub(:user_by_uid).and_return(user)
+      strategy.authenticate!
+    end
+  end
+
+  describe "#authenticate!" do
+    it "should call #update_facebook_settings! if found user by uid" do
+      strategy.should_receive(:update_facebook_settings!).with(user)
+      strategy.stub(:user_by_uid).and_return(user)
+      strategy.authenticate!
+    end
+
+    it "should call #update_facebook_settings! if found user by email" do
+      strategy.should_receive(:update_facebook_settings!).with(user)
+      strategy.stub(:user_by_email).and_return(user)
+      strategy.authenticate!
+    end
+
+    it "should call #build_user when use does not exists" do
+      strategy.should_receive(:build_user)
+      strategy.stub(:user_by_email).and_return(nil)
+      strategy.stub(:user_by_uid).and_return(nil)
+      strategy.authenticate!
+    end
+  end
+end</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="stubs_and_mocks/08_facebook_example/1">
+<h2>Facebook testing example</h2></div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="stubs_and_mocks/08_facebook_example/2">
+<h2>Facebook wall messages JSON response</h2>
+
+<pre class="sh_JavaScript"><code>  {
+    "data": [
+         {
+           "id": "100001931951713_187401811278779",
+           "from": {
+               "name": "Stefan Lorek",
+               "id": "100001931951713"
+                 }  ,
+            "message": "test",
+            "actions": [
+                 {
+               "name": "Comment",
+               "link": "http://www.facebook.com/100001931951713/posts/187401811278779"
+                 },
+                 {
+               "name": "Like",
+               "link": "http://www.facebook.com/100001931951713/posts/187401811278779"
+                 }
+               ],
+           "privacy": {
+               "description": "Everyone",
+               "value": "EVERYONE"
+              },
+            "type": "status",
+            "created_time": "2011-01-21T18:32:34+0000",
+            "updated_time": "2011-01-21T18:32:34+0000",
+            "attribution": "peoplejar"
+         }
+      ],
+}   </code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="stubs_and_mocks/08_facebook_example/3">
+<h2>Stubbing Facebook integration library</h2>
+
+<pre class="sh_Ruby"><code>describe Social::Facebook do
+  describe "#get_wall_messages" do
+
+    it "should return nil when user is unauthorized" do
+      user.facebook.get_wall_messages.should be_nil
+    end
+
+    describe "message" do
+      before do
+        FakeWeb.register_uri(:get, Regexp.new("https://graph.facebook.com/me/feed*"), :body =&gt; fixture_file("fb_message.json"))
+      end
+      let(:message) { facebook_user.facebook.get_wall_messages[0] }
+
+      it "should return well formatted messages" do
+        message.should respond_to(:created_at, :id, :type, :user_name, :body)
+      end
+
+      it "should have user_name like in example file" do
+        message.user_name.should == "Stefan Lorek"
+      end
+
+      it "should have body like in example file" do
+        message.body.should == "test"
+      end
+
+      it "should have created_at like in example file" do
+        message.created_at.should == DateTime.parse("2011-01-21T18:32:34+0000")
+      end
+
+      it "should return nil when remote server returns error" do
+        FakeWeb.register_uri(:get, Regexp.new("https://graph.facebook.com/me/feed*"), :status =&gt; "500")
+        facebook_user.facebook.get_wall_messages.should be_nil
+      end
+    end
+  end
+end</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content full-page" ref="outro/00_outro">
+<h2>Thanks !</h2>
+
+<h3>Questions ?</h3></div>
+</div></div>
+
+</body>
+</html>

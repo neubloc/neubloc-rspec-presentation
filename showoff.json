@@ -1,0 +1,11 @@
+{ 
+  "name": "RSpec", 
+  "sections": [ 
+    { "section" : "intro" },
+    { "section" : "about_rspec" }, 
+    { "section" : "why_rspec" }, 
+    { "section" : "rspec_in_action" }, 
+    { "section" : "stubs_and_mocks" }, 
+    { "section" : "outro" } 
+              ]
+}
